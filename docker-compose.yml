@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+    # Aplicação principal
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - redis
+        networks:
+            - laravel
+
+    # Nginx
+    nginx:
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - "8000:80"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
+        networks:
+            - laravel
+
+    # Banco de dados MySQL
+    db:
+        image: mysql:8.0
+        platform: linux/x86_64
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-bank_transfers_db}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}
+        volumes:
+            - ./.docker/mysql/dbdata:/var/lib/mysql
+        ports:
+            - "3300:3306"
+        networks:
+            - laravel
+
+    # PHPMyAdmin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        platform: linux/x86_64
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+        networks:
+            - laravel
+
+    # Redis
+    redis:
+        image: redis:latest
+        networks:
+            - laravel
+
+    # Kafka
+    kafka:
+        image: bitnami/kafka:latest
+        ports:
+            - "9092:9092"
+            - "9093:9093"
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_ENABLE_KRAFT: "yes"
+            KAFKA_CFG_PROCESS_ROLES: "controller,broker"
+            KAFKA_CFG_NODE_ID: "1"
+            KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+            KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+            KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+            KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+            KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+            KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+            KAFKA_CFG_NUM_PARTITIONS: "3"
+            KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: "1"
+        volumes:
+            - kafka_data:/bitnami
+        networks:
+            - laravel
+
+volumes:
+    kafka_data:
+        driver: local
+
+networks:
+    laravel:
+        driver: bridge
