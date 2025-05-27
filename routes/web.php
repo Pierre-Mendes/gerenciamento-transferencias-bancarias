@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AccountController;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,13 @@ Route::middleware(['api'])->prefix('api')->group(function () {
         'show' => 'api.users.show',
         'update' => 'api.users.update',
         'destroy' => 'api.users.destroy'
+    ]);
+
+    Route::apiResource('accounts', AccountController::class)->names([
+        'index' => 'api.accounts.index',
+        'store' => 'api.accounts.store',
+        'show' => 'api.accounts.show',
+        'update' => 'api.accounts.update',
+        'destroy' => 'api.accounts.destroy'
     ]);
 });
