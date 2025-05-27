@@ -13,6 +13,7 @@ class Transfer extends Model
         'from_account_id',
         'to_account_id',
         'amount',
+        'type',
         'status',
         'processed_at',
     ];

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\TransferController;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Facades\Route;
 
@@ -33,5 +34,13 @@ Route::middleware(['api'])->prefix('api')->group(function () {
         'show' => 'api.accounts.show',
         'update' => 'api.accounts.update',
         'destroy' => 'api.accounts.destroy'
+    ]);
+
+    Route::apiResource('transfers', TransferController::class)->names([
+        'index' => 'api.transfers.index',
+        'store' => 'api.transfers.store',
+        'show' => 'api.transfers.show',
+        'update' => 'api.transfers.update',
+        'destroy' => 'api.transfers.destroy'
     ]);
 });
