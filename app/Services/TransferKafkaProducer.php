@@ -15,6 +15,7 @@ class TransferKafkaProducer
      */
     public function publish(array $transferData, ?string $key = null, array $headers = []): void
     {
+        Log::info('Producer chamado', $transferData);
         try {
             $message = new Message(
                 headers: $headers,
@@ -23,12 +24,12 @@ class TransferKafkaProducer
             );
 
             Kafka::publish(env('KAFKA_BROKERS', 'kafka:9092'))
-                ->onTopic(env('KAFKA_TOPIC', 'kafka_topic'))
+                ->onTopic(env('KAFKA_TOPIC', 'transfers'))
                 ->withMessage($message)
                 ->send();
 
             Log::debug('Mensagem publicada no Kafka', [
-                'topic' => env('KAFKA_TOPIC', 'kafka_topic'),
+                'topic' => env('KAFKA_TOPIC', 'transfers'),
                 'key' => $key,
                 'data' => $transferData
             ]);
