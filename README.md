@@ -39,13 +39,13 @@ Criação de endpoints para um sistema bancário robusto, com processamento ass�
 - [`http-message-util`](https://github.com/php-fig/http-message-util)
 
 ### 📁 Estrutura do projeto:
-`/app/DTOs:` Data Transfer Objects
-`/app/Repositories:` Repositórios (Repository Pattern)
-`/app/Services:` Serviços de responsabilidade única
-`/app/Http/Requests`: Form Requests para validação
-`/app/Console/Commands`: Consumers Kafka
-`/app/Http/Controllers`/Api: Controllers RESTful
-`/database/migrations:` Migrations do banco
+- `/app/DTOs:` Data Transfer Objects
+- `/app/Repositories:` Repositórios (Repository Pattern)
+- `/app/Services:` Serviços de responsabilidade única
+- `/app/Http/Requests`: Form Requests para validação
+- `/app/Console/Commands`: Consumers Kafka
+- `/app/Http/Controllers`/Api: Controllers RESTful
+- `/database/migrations:` Migrations do banco
 
 ---
 
